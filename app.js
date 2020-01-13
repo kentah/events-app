@@ -11,6 +11,16 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if(req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(isAuth);
 
 app.use('/graphql', graphqlHttp({
@@ -23,7 +33,7 @@ mongoose.connect(
 `mongodb://${process.env.MONGO_SERVER}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`, 
   {useMongoClient: true})
   .then(() => {
-    app.listen(3000)
+    app.listen(8000)
   })
   .catch(err => {
     console.log(err);
